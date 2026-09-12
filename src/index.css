@@ -22,8 +22,8 @@ body,
   --color-accent-mint: #2FBF8F;
   --color-accent-mint-tint: #DCF5EC;
   --color-accent-mint-text: #1F6B52;
-  --color-canvas-top: #DFF5EE;
-  --color-canvas-bottom: #FFF2D2;
+  --color-canvas-top: #EFF8F4;
+  --color-canvas-bottom: #FFFBF3;
   --color-surface: #FDFBF7;
   --color-surface-border: #EFE6D3;
   --color-text-primary: #33281F;
@@ -49,10 +49,13 @@ body {
   font-family: 'Gamja Flower', 'Pretendard', cursive;
 }
 
-/* Confirmed canvas token (DESIGN_SYSTEM.md §3): aquamint → warm cream, page canvas only.
-   Never applied to buttons/cards/icons — those stay flat per the no-gradient-on-components rule. */
+/* Canvas token (DESIGN_SYSTEM.md §3, resolved from the §3-1 review-pending
+   candidates against home_viewer_reference.png): mint is confined to a thin
+   band at the very top, then the canvas holds flat warm off-white for the
+   rest of the screen — not an even 0→100% blend. Never applied to
+   buttons/cards/icons — those stay flat per the no-gradient-on-components rule. */
 .bg-canvas {
-  background: linear-gradient(180deg, var(--color-canvas-top) 0%, var(--color-canvas-bottom) 100%);
+  background: linear-gradient(180deg, var(--color-canvas-top) 0%, var(--color-canvas-bottom) 18%, var(--color-canvas-bottom) 100%);
 }
 
 .shadow-panel {
