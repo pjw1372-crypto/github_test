@@ -1,0 +1,36 @@
+.bubble {
+  position: absolute;
+  top: var(--space-2);
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 260px;
+  padding: var(--space-2);
+  background: var(--color-surface);
+  border: var(--border-hairline);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-1);
+  text-align: center;
+  z-index: 1;
+}
+
+.bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 16px;
+  background: var(--color-surface);
+  border-right: var(--border-hairline);
+  border-bottom: var(--border-hairline);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.text {
+  margin: 0;
+  font-family: var(--font-family-mascot);
+  font-size: var(--font-mascot-size);
+  font-weight: var(--font-mascot-weight);
+  color: var(--color-text-primary);
+}

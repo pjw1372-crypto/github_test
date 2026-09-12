@@ -1,0 +1,114 @@
+/*
+ * Design tokens — single source of truth.
+ * Values come from DESIGN_SYSTEM.md §1-1 v8 (structure) and §3 (C안 v3, CONFIRMED color block).
+ * The §3-1 canvas-bg candidates in DESIGN_SYSTEM.md are explicitly marked "확정 전" (not yet
+ * confirmed) — do NOT apply them here. Only §3's committed code block is used.
+ *
+ * Rule: components must reference these custom properties only. No hex colors, no raw px
+ * for spacing/radius/shadow/font-size outside this file (the one documented exception is the
+ * Primary button's pressed-edge shadow color, which intentionally repeats --color-primary-pressed
+ * as a literal because CSS custom properties cannot be composed inside another custom property's
+ * shorthand value — see --shadow-button-primary-pressed below).
+ */
+
+:root {
+  /* ---------- Color ---------- */
+  --color-primary: #ff7e67;
+  --color-primary-hover: #ff9886;
+  --color-primary-pressed: #ff5334;
+  --color-secondary: #8b7cf6;
+
+  --color-accent-mint: #2fbf8f;
+  --color-accent-mint-tint: #dcf5ec;
+  --color-accent-mint-text: #1f6b52;
+
+  --color-canvas-bg: linear-gradient(180deg, #dff5ee 0%, #fff2d2 100%);
+  --color-canvas-accent-text: #b23f2a;
+
+  --color-surface: #fdfbf7;
+  --color-surface-border: #efe6d3;
+
+  --color-text-primary: #33281f;
+  --color-text-secondary: #6e6353;
+
+  --color-cta: #ff8a3d;
+  --color-premium: #6c5ce7; /* defined for completeness — not used on the home screen */
+  --color-reward: #ffc700;
+
+  --color-success: #2fa86b;
+  --color-warning: #f5a623;
+  --color-error: #e5484d;
+
+  /* Fixed white text-on-color value from the Button System table (§7) — not a named
+     brand token, but still centralized here so no component file needs a literal hex. */
+  --color-on-primary: #ffffff;
+
+  /* ---------- Typography ---------- */
+  /* Pretendard webfont files are not yet available in this environment — falls back to the
+     stack Pretendard itself documents as its system-font equivalent. TODO: once licensed
+     Pretendard font files are provided, self-host them under /public/fonts and load via
+     next/font/local, then this stack stays as the fallback tail. */
+  --font-family-base: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
+    'Malgun Gothic', sans-serif;
+  /* 그리운 코코초이툰 has no web CDN yet — Gamja Flower is the documented temporary substitute
+     (loaded from Google Fonts in app/layout.tsx). */
+  --font-family-mascot: 'Gamja Flower', 'Apple SD Gothic Neo', cursive;
+
+  --font-display-size: 32px;
+  --font-display-weight: 800;
+
+  --font-h1-size: 24px;
+  --font-h1-weight: 700;
+
+  --font-h2-size: 18px;
+  --font-h2-weight: 700;
+
+  --font-body-lg-size: 18px;
+  --font-body-lg-weight: 400;
+
+  --font-body-size: 15px;
+  --font-body-weight: 400;
+
+  --font-caption-size: 13px;
+  --font-caption-weight: 500;
+
+  --font-micro-size: 11px;
+  --font-micro-weight: 700;
+
+  --font-mascot-size: 19px;
+  --font-mascot-weight: 400;
+
+  /* ---------- Spacing (8px scale) ---------- */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 48px;
+  --space-6: 64px;
+
+  /* ---------- Radius ---------- */
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+
+  /* ---------- Shadow ---------- */
+  --shadow-0: none;
+  --shadow-1: 0 2px 6px rgba(38, 36, 51, 0.06);
+  --shadow-2: 0 4px 12px rgba(38, 36, 51, 0.1);
+  --shadow-3: 0 10px 24px rgba(38, 36, 51, 0.16);
+
+  /* Jelly/game-panel shadows — home screen's single strong card only. */
+  --shadow-panel: 0 10px 24px rgba(255, 141, 103, 0.14), 0 2px 8px rgba(38, 36, 51, 0.07);
+  --shadow-chip: 0 3px 8px rgba(38, 36, 51, 0.07);
+  --shadow-gloss: inset 0 2px 0 rgba(255, 255, 255, 0.45);
+
+  /* ---------- Border ---------- */
+  --border-hairline: 1px solid var(--color-surface-border);
+  --border-default: 1.5px solid var(--color-surface-border);
+
+  /* ---------- Button (Primary) ---------- */
+  --button-primary-height: 52px;
+  /* Documented exception: must match --color-primary-pressed above. */
+  --shadow-button-primary-pressed: 0 3px 0 #ff5334;
+}

@@ -1,0 +1,20 @@
+/* A one-line greeting — not a stat widget. No card, no border, no background. */
+.greeting {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-h1-size);
+  font-weight: var(--font-h1-weight);
+  color: var(--color-text-primary);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: var(--font-body-size);
+  font-weight: var(--font-body-weight);
+  color: var(--color-text-secondary);
+}

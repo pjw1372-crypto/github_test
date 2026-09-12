@@ -1,0 +1,39 @@
+/*
+ * DESIGN_SYSTEM.md §1-1 v8, principle 7: the mascot is the home screen's large visual
+ * centerpiece, unboxed, blended into the canvas background — allowed to take up close to
+ * half the screen. The dashed border/tint background below are PLACEHOLDER-ONLY styling
+ * (see component comment) and must be removed once the real
+ * yeoul-fox-home-sitting-reading.png is dropped in — the final version should show the
+ * PNG alone with no surrounding box.
+ */
+.wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  width: 100%;
+  min-height: 420px;
+  padding-top: var(--space-6);
+}
+
+.imageBox {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 0.95;
+  border-radius: var(--radius-lg);
+  border: 2px dashed var(--color-surface-border);
+  background: var(--color-accent-mint-tint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3);
+  text-align: center;
+}
+
+.placeholderText {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-caption-size);
+  font-weight: var(--font-caption-weight);
+}
