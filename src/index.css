@@ -1,0 +1,80 @@
+@import url('https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/variable/pretendardvariable.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap');
+@import 'tailwindcss';
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+:root {
+  --color-primary: #FF7E67;
+  --color-primary-hover: #FF9886;
+  --color-primary-pressed: #FF5334;
+  --color-secondary: #8B7CF6;
+  --color-secondary-hover: #A296F9;
+  --color-secondary-pressed: #6C5CE7;
+  --color-secondary-tint: #EFEAFC;
+  --color-secondary-text: #5646B8;
+  --color-cta: #FF8A3D;
+  --color-primary-tint: #FFE6DE;
+  --color-accent-mint: #2FBF8F;
+  --color-accent-mint-tint: #DCF5EC;
+  --color-accent-mint-text: #1F6B52;
+  --color-canvas-top: #EFF8F4;
+  --color-canvas-bottom: #FFFBF3;
+  --color-surface: #FDFBF7;
+  --color-surface-border: #EFE6D3;
+  --color-text-primary: #33281F;
+  --color-text-secondary: #6E6353;
+  --color-success: #2FA86B;
+  --color-reward-gold: #FFC700;
+
+  /* Shadow tokens (DESIGN_SYSTEM.md §5) — flat / offset only, no colored glow or blur beyond these */
+  --shadow-1: 0 2px 6px rgba(38, 36, 51, 0.06);
+  --shadow-2: 0 4px 12px rgba(38, 36, 51, 0.10);
+  --shadow-3: 0 10px 24px rgba(38, 36, 51, 0.16);
+  --shadow-panel: 0 10px 24px rgba(255, 141, 103, 0.14), 0 2px 8px rgba(38, 36, 51, 0.07);
+  --shadow-chip: 0 3px 8px rgba(38, 36, 51, 0.07);
+  --gloss: inset 0 2px 0 rgba(255, 255, 255, 0.45);
+}
+
+body {
+  font-family: 'Pretendard Variable', 'Pretendard', 'Noto Sans KR', sans-serif;
+  color: var(--color-text-primary);
+}
+
+.font-mascot {
+  font-family: 'Gamja Flower', 'Pretendard', cursive;
+}
+
+/* Canvas token (DESIGN_SYSTEM.md §3, resolved from the §3-1 review-pending
+   candidates against home_viewer_reference.png): mint is confined to a thin
+   band at the very top, then the canvas holds flat warm off-white for the
+   rest of the screen — not an even 0→100% blend. Never applied to
+   buttons/cards/icons — those stay flat per the no-gradient-on-components rule. */
+.bg-canvas {
+  background: linear-gradient(180deg, var(--color-canvas-top) 0%, var(--color-canvas-bottom) 18%, var(--color-canvas-bottom) 100%);
+}
+
+.shadow-panel {
+  box-shadow: var(--shadow-panel), var(--gloss);
+}
+
+.shadow-chip {
+  box-shadow: var(--shadow-chip), var(--gloss);
+}
+
+/* Below this width the two-column hero layout stacks as a safety net —
+   1180px (Tablet) is the real minimum target and stays side-by-side. */
+@media (max-width: 860px) {
+  .home-hero-grid {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  .home-hero-mascot-col {
+    align-items: center !important;
+    align-self: center !important;
+  }
+}
