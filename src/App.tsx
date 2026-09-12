@@ -83,16 +83,6 @@ function BellSvg({ active = false }: { active?: boolean }) {
   );
 }
 
-function SearchSvg({ active = false }: { active?: boolean }) {
-  const c = active ? "#FFFFFF" : "var(--color-text-secondary)";
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <circle cx="11" cy="11" r="7" stroke={c} strokeWidth="2" />
-      <path d="M16.5 16.5L21 21" stroke={c} strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 function HomeSvg({ active = false }: { active?: boolean }) {
   const c = active ? "#FFFFFF" : "var(--color-text-secondary)";
   return (
@@ -133,22 +123,14 @@ function PaintSvg() {
   );
 }
 
-function ChevronRightSvg() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <path d="M9 6L15 12L9 18" stroke="var(--color-text-secondary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 // ── Unified top navigation bar ──────────────────────────
-// Single navigation system (DESIGN_SYSTEM §1-1 v7 #9): 알림·검색·홈·서재 all
-// live in one row, one visual container, one consistent button style —
-// no separate "icon button pod" + "tab pod" split.
+// Single navigation system, confirmed 3-button spec (DESIGN_SYSTEM §1-1 v8 #9):
+// 알림 → 서재 → 홈, in that fixed order, 홈 always rightmost. 검색 is removed
+// (v8 #5) — no divider needed now that it's a single consistent 3-button row.
 function NavBar({ activeTab, onChangeTab }: { activeTab: NavTab; onChangeTab: (t: NavTab) => void }) {
   const baseBtn =
     "relative flex flex-col items-center justify-center gap-1 rounded-2xl transition-all hover:scale-[1.04]";
-  const baseSize = { width: 68, height: 64 };
+  const baseSize = { width: 72, height: 64 };
 
   return (
     <div
@@ -166,30 +148,8 @@ function NavBar({ activeTab, onChangeTab }: { activeTab: NavTab; onChangeTab: (t
         <span className="text-[11px] font-semibold" style={{ color: "var(--color-text-secondary)" }}>알림</span>
         <span
           className="absolute rounded-full"
-          style={{ width: 8, height: 8, background: "var(--color-cta)", border: "2px solid var(--color-surface)", top: 6, right: 14 }}
+          style={{ width: 8, height: 8, background: "var(--color-cta)", border: "2px solid var(--color-surface)", top: 6, right: 16 }}
         />
-      </button>
-
-      <button className={baseBtn} style={{ ...baseSize, background: "transparent" }} aria-label="검색">
-        <SearchSvg />
-        <span className="text-[11px] font-semibold" style={{ color: "var(--color-text-secondary)" }}>검색</span>
-      </button>
-
-      <div style={{ width: 1.5, height: 36, background: "var(--color-surface-border)" }} />
-
-      <button
-        className={baseBtn}
-        style={{
-          ...baseSize,
-          background: activeTab === "home" ? "var(--color-primary)" : "transparent",
-          boxShadow: activeTab === "home" ? "0 3px 10px rgba(255,126,103,0.35)" : "none",
-        }}
-        onClick={() => onChangeTab("home")}
-        aria-current={activeTab === "home" ? "page" : undefined}
-        aria-label="홈"
-      >
-        <HomeSvg active={activeTab === "home"} />
-        <span className="text-[11px] font-bold" style={{ color: activeTab === "home" ? "#FFFFFF" : "var(--color-text-secondary)" }}>홈</span>
       </button>
 
       <button
@@ -205,6 +165,21 @@ function NavBar({ activeTab, onChangeTab }: { activeTab: NavTab; onChangeTab: (t
       >
         <LibrarySvg active={activeTab === "library"} />
         <span className="text-[11px] font-bold" style={{ color: activeTab === "library" ? "#FFFFFF" : "var(--color-text-secondary)" }}>서재</span>
+      </button>
+
+      <button
+        className={baseBtn}
+        style={{
+          ...baseSize,
+          background: activeTab === "home" ? "var(--color-primary)" : "transparent",
+          boxShadow: activeTab === "home" ? "0 3px 10px rgba(255,126,103,0.35)" : "none",
+        }}
+        onClick={() => onChangeTab("home")}
+        aria-current={activeTab === "home" ? "page" : undefined}
+        aria-label="홈"
+      >
+        <HomeSvg active={activeTab === "home"} />
+        <span className="text-[11px] font-bold" style={{ color: activeTab === "home" ? "#FFFFFF" : "var(--color-text-secondary)" }}>홈</span>
       </button>
     </div>
   );
@@ -348,31 +323,6 @@ function TodayLearningCard({ dayType }: { dayType: DayType }) {
         {isReading ? "지금 시작하기" : "그림 그리러 가기"}
       </button>
     </div>
-  );
-}
-
-// ── Lightweight library shortcut — deliberately not a "strong card" ────
-// Per §1-1 #1/#2: only the Today card gets radius+shadow+border together;
-// this stays a thin divider-bordered row so it doesn't compete with it.
-function LibraryShortcutRow({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className="flex items-center gap-3 px-5 py-4 rounded-2xl text-left transition-colors hover:bg-white/50"
-      style={{ maxWidth: 560, background: "rgba(253,251,247,0.55)", border: "1.5px solid var(--color-surface-border)" }}
-    >
-      <div
-        className="flex items-center justify-center rounded-full flex-shrink-0"
-        style={{ width: 36, height: 36, background: "var(--color-secondary-tint)" }}
-      >
-        <LibrarySvg />
-      </div>
-      <div className="flex flex-col flex-1 min-w-0">
-        <span className="font-bold text-sm" style={{ color: "var(--color-text-primary)" }}>내 서재</span>
-        <span className="text-xs truncate" style={{ color: "var(--color-text-secondary)" }}>지금까지 읽은 이야기를 확인해보세요</span>
-      </div>
-      <ChevronRightSvg />
-    </button>
   );
 }
 
@@ -524,7 +474,6 @@ export default function App() {
               </div>
 
               <TodayLearningCard dayType={dayType} />
-              <LibraryShortcutRow onClick={() => setActiveTab("library")} />
             </div>
 
             {/* Right: Yeoul, anchored on the ground, room reserved for future interaction */}
