@@ -326,95 +326,133 @@ function TodayLearningCard({ dayType }: { dayType: DayType }) {
   );
 }
 
-// ── Yeoul the fox — flat vector / cel-shaded, native transparent SVG ────
-// No mix-blend-mode hack needed: unlike a PNG export, this has no
-// background box at all. Sized and anchored to sit on the ground,
-// with room reserved above/around it for a future speech-bubble swap,
-// expression change, or touch interaction (PROJECT_BRIEF §6/§1-1 #7).
+// ── Yeoul the fox — standing/waving pose, soft-shaded flat vector ───────
+// Pose reference: standing, waving one paw, holding a spiral notebook +
+// pencil in the other. Rendering pushed toward a softer, glossier shading
+// style (gradient fur fill + gloss highlights) instead of pure flat cel
+// shading, while staying native SVG so it exports to a clean transparent
+// PNG with no background box — no mix-blend-mode hack needed.
+// Sized and anchored to sit on the ground, with room reserved above/around
+// it for a future speech-bubble swap, expression change, or touch
+// interaction (PROJECT_BRIEF §6 / DESIGN_SYSTEM §1-1 #7).
 function YeoulMascot() {
   return (
     <svg
-      viewBox="0 0 300 320"
+      viewBox="0 0 320 340"
       xmlns="http://www.w3.org/2000/svg"
       aria-label="여울이 마스코트"
       role="img"
       style={{ width: "100%", maxWidth: 380, height: "auto", display: "block" }}
     >
+      <defs>
+        <radialGradient id="furGrad" cx="38%" cy="28%" r="75%">
+          <stop offset="0%" stopColor="#FFB47A" />
+          <stop offset="55%" stopColor="#F4914A" />
+          <stop offset="100%" stopColor="#EE8038" />
+        </radialGradient>
+        <radialGradient id="creamGrad" cx="40%" cy="25%" r="80%">
+          <stop offset="0%" stopColor="#FFFAF0" />
+          <stop offset="100%" stopColor="#FFE9CF" />
+        </radialGradient>
+        <radialGradient id="gloss" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
+      {/* soft grounding shadow */}
+      <ellipse cx="164" cy="322" rx="70" ry="12" fill="#3D2A1E" opacity="0.12" />
+
       {/* tail — base tucks under the body (drawn next) so it reads as attached, not floating */}
       <path
-        d="M188 252 C232 262 274 232 278 178 C281 142 250 122 226 140 C250 145 260 172 250 196 C242 218 216 236 188 244 Z"
-        fill="#F4914A" stroke="#3D2A1E" strokeWidth="5" strokeLinejoin="round"
+        d="M196 246 C238 252 272 222 270 172 C268 140 240 122 220 136 C240 142 250 166 244 190 C238 210 218 228 196 238 Z"
+        fill="url(#furGrad)" stroke="#4A3221" strokeWidth="4" strokeLinejoin="round"
       />
-      <path d="M258 150 C264 168 258 186 246 200" fill="none" stroke="#FFE9CF" strokeWidth="10" strokeLinecap="round" />
+      <path d="M250 150 C256 168 250 186 238 200" fill="none" stroke="#FFE9CF" strokeWidth="9" strokeLinecap="round" />
 
-      {/* body, sitting */}
+      {/* standing body */}
       <path
-        d="M96 316 C86 262 96 214 150 200 C204 214 214 262 204 316 Z"
-        fill="#F4914A" stroke="#3D2A1E" strokeWidth="5" strokeLinejoin="round"
+        d="M120 150 C108 185 106 235 116 278 C130 295 190 295 204 278 C214 235 212 185 200 150 C182 143 138 143 120 150 Z"
+        fill="url(#furGrad)" stroke="#4A3221" strokeWidth="4.5" strokeLinejoin="round"
       />
       {/* belly */}
       <path
-        d="M118 314 C112 274 120 236 150 226 C180 236 188 274 182 314 Z"
-        fill="#FFF3E0" stroke="#3D2A1E" strokeWidth="4" strokeLinejoin="round"
+        d="M138 162 C130 196 130 236 140 272 C150 282 170 282 180 272 C190 236 190 196 182 162 C170 155 150 155 138 162 Z"
+        fill="url(#creamGrad)" stroke="#4A3221" strokeWidth="3.5" strokeLinejoin="round"
       />
 
-      {/* feet on the ground */}
-      <ellipse cx="122" cy="312" rx="24" ry="14" fill="#FFF3E0" stroke="#3D2A1E" strokeWidth="4" />
-      <ellipse cx="178" cy="312" rx="24" ry="14" fill="#FFF3E0" stroke="#3D2A1E" strokeWidth="4" />
-      <circle cx="114" cy="313" r="3.4" fill="#FFC9AE" />
-      <circle cx="124" cy="316" r="3.4" fill="#FFC9AE" />
-      <circle cx="132" cy="313" r="3.4" fill="#FFC9AE" />
-      <circle cx="170" cy="313" r="3.4" fill="#FFC9AE" />
-      <circle cx="178" cy="316" r="3.4" fill="#FFC9AE" />
-      <circle cx="186" cy="313" r="3.4" fill="#FFC9AE" />
+      {/* feet, standing */}
+      <ellipse cx="139" cy="298" rx="21" ry="13" fill="url(#creamGrad)" stroke="#4A3221" strokeWidth="3.5" />
+      <ellipse cx="181" cy="298" rx="21" ry="13" fill="url(#creamGrad)" stroke="#4A3221" strokeWidth="3.5" />
+      <circle cx="132" cy="299" r="3" fill="#FFC9AE" />
+      <circle cx="140" cy="302" r="3" fill="#FFC9AE" />
+      <circle cx="148" cy="299" r="3" fill="#FFC9AE" />
+      <circle cx="172" cy="299" r="3" fill="#FFC9AE" />
+      <circle cx="180" cy="302" r="3" fill="#FFC9AE" />
+      <circle cx="188" cy="299" r="3" fill="#FFC9AE" />
+
+      {/* waving arm (viewer's right) — drawn as a tapered capsule so it clears
+          the head circle instead of tucking (and hiding) behind it */}
+      <path d="M200 156 C218 146 236 122 246 90" fill="none" stroke="#4A3221" strokeWidth="38" strokeLinecap="round" />
+      <path d="M200 156 C218 146 236 122 246 90" fill="none" stroke="url(#furGrad)" strokeWidth="30" strokeLinecap="round" />
+      <ellipse cx="248" cy="86" rx="16" ry="14" fill="url(#creamGrad)" stroke="#4A3221" strokeWidth="3.5" transform="rotate(-20 248 86)" />
+      <path d="M240 74 L238 65 M248 70 L247 61 M256 74 L258 65" stroke="#4A3221" strokeWidth="2.5" strokeLinecap="round" />
 
       {/* bowtie */}
-      <path d="M138 196 L150 208 L138 220 Z" fill="#5A3A24" stroke="#3D2A1E" strokeWidth="3.5" strokeLinejoin="round" />
-      <path d="M162 196 L150 208 L162 220 Z" fill="#5A3A24" stroke="#3D2A1E" strokeWidth="3.5" strokeLinejoin="round" />
-      <circle cx="150" cy="208" r="7" fill="#6B4630" stroke="#3D2A1E" strokeWidth="3" />
+      <path d="M146 146 L160 158 L146 170 Z" fill="#5A3A24" stroke="#4A3221" strokeWidth="3.2" strokeLinejoin="round" />
+      <path d="M174 146 L160 158 L174 170 Z" fill="#5A3A24" stroke="#4A3221" strokeWidth="3.2" strokeLinejoin="round" />
+      <circle cx="160" cy="158" r="6.5" fill="#6B4630" stroke="#4A3221" strokeWidth="2.6" />
 
-      {/* open book held in front, small pencil resting on top */}
-      <path
-        d="M104 260 C124 250 140 250 150 258 C160 250 176 250 196 260 L196 288 C176 280 160 280 150 288 C140 280 124 280 104 288 Z"
-        fill="#3EA0D8" stroke="#3D2A1E" strokeWidth="4" strokeLinejoin="round"
-      />
-      <path d="M150 258 L150 288" stroke="#3D2A1E" strokeWidth="3" />
-      <path d="M112 262 C126 256 136 256 145 262" fill="none" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
-      <path d="M112 270 C126 264 136 264 145 270" fill="none" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
-      <path d="M155 262 C164 256 174 256 188 262" fill="none" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
-      <path d="M155 270 C164 264 174 264 188 270" fill="none" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
-      <rect x="196" y="238" width="34" height="6.5" rx="3" fill="#FFD166" stroke="#3D2A1E" strokeWidth="2.5" transform="rotate(28 196 238)" />
-
-      {/* arms/paws on the book */}
-      <ellipse cx="108" cy="258" rx="13" ry="11" fill="#F4914A" stroke="#3D2A1E" strokeWidth="4" />
-      <ellipse cx="192" cy="258" rx="13" ry="11" fill="#F4914A" stroke="#3D2A1E" strokeWidth="4" />
+      {/* notebook + pencil arm (viewer's left) — same tapered-capsule approach */}
+      <path d="M128 158 C106 168 90 190 86 216" fill="none" stroke="#4A3221" strokeWidth="38" strokeLinecap="round" />
+      <path d="M128 158 C106 168 90 190 86 216" fill="none" stroke="url(#furGrad)" strokeWidth="30" strokeLinecap="round" />
+      {/* notebook cover */}
+      <rect x="56" y="190" width="52" height="64" rx="7" style={{ fill: "var(--color-accent-mint)" }} stroke="#4A3221" strokeWidth="4" />
+      <circle cx="56" cy="200" r="3" fill="none" stroke="#4A3221" strokeWidth="2.5" />
+      <circle cx="56" cy="214" r="3" fill="none" stroke="#4A3221" strokeWidth="2.5" />
+      <circle cx="56" cy="228" r="3" fill="none" stroke="#4A3221" strokeWidth="2.5" />
+      <circle cx="56" cy="242" r="3" fill="none" stroke="#4A3221" strokeWidth="2.5" />
+      <path d="M68 204 L98 204 M68 216 L98 216 M68 228 L92 228" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" opacity="0.85" />
+      {/* pencil diagonal across the notebook — one local-coordinate group, rotated once */}
+      <g transform="rotate(-28 82 220)">
+        <rect x="52" y="216" width="60" height="8" rx="3" fill="#FFD166" stroke="#4A3221" strokeWidth="2.5" />
+        <path d="M52 216 L42 220 L52 224 Z" fill="#3D2A1E" stroke="#4A3221" strokeWidth="1.5" strokeLinejoin="round" />
+        <rect x="112" y="216" width="8" height="8" rx="2" fill="#FF9E8A" stroke="#4A3221" strokeWidth="2" />
+      </g>
+      {/* paw gripping the notebook edge */}
+      <ellipse cx="90" cy="218" rx="14" ry="12" fill="url(#furGrad)" stroke="#4A3221" strokeWidth="4" />
 
       {/* head */}
-      <path d="M96 74 L70 30 L112 52 Z" fill="#F4914A" stroke="#3D2A1E" strokeWidth="5" strokeLinejoin="round" />
-      <path d="M96 68 L80 42 L104 55 Z" fill="#FFE9CF" />
-      <path d="M204 74 L230 30 L188 52 Z" fill="#F4914A" stroke="#3D2A1E" strokeWidth="5" strokeLinejoin="round" />
-      <path d="M204 68 L220 42 L196 55 Z" fill="#FFE9CF" />
+      <path d="M106 74 L80 20 L122 42 Z" fill="url(#furGrad)" stroke="#4A3221" strokeWidth="4.5" strokeLinejoin="round" />
+      <path d="M106 66 L90 32 L114 47 Z" fill="#FFE9CF" />
+      <path d="M214 74 L240 20 L198 42 Z" fill="url(#furGrad)" stroke="#4A3221" strokeWidth="4.5" strokeLinejoin="round" />
+      <path d="M214 66 L230 32 L206 47 Z" fill="#FFE9CF" />
 
-      <circle cx="150" cy="110" r="66" fill="#F4914A" stroke="#3D2A1E" strokeWidth="5" />
-      <path d="M150 92 C176 92 190 118 182 146 C176 164 124 164 118 146 C110 118 124 92 150 92 Z" fill="#FFF3E0" stroke="#3D2A1E" strokeWidth="3.5" />
+      <circle cx="160" cy="100" r="64" fill="url(#furGrad)" stroke="#4A3221" strokeWidth="4.5" />
+      <path d="M160 83 C185 83 198 108 190 135 C184 152 136 152 130 135 C122 108 135 83 160 83 Z" fill="url(#creamGrad)" stroke="#4A3221" strokeWidth="3.2" />
+      {/* gloss highlights */}
+      <ellipse cx="130" cy="66" rx="32" ry="18" fill="url(#gloss)" transform="rotate(-18 130 66)" />
+      <ellipse cx="140" cy="168" rx="28" ry="15" fill="url(#gloss)" opacity="0.7" />
 
       {/* glasses */}
-      <circle cx="126" cy="104" r="19" fill="#FFFFFF" fillOpacity="0.55" stroke="#3D2A1E" strokeWidth="4" />
-      <circle cx="174" cy="104" r="19" fill="#FFFFFF" fillOpacity="0.55" stroke="#3D2A1E" strokeWidth="4" />
-      <path d="M145 104 L155 104" stroke="#3D2A1E" strokeWidth="4" />
-      <path d="M107 100 L98 96" stroke="#3D2A1E" strokeWidth="4" strokeLinecap="round" />
-      <path d="M193 100 L202 96" stroke="#3D2A1E" strokeWidth="4" strokeLinecap="round" />
-      <circle cx="126" cy="104" r="4.5" fill="#3D2A1E" />
-      <circle cx="174" cy="104" r="4.5" fill="#3D2A1E" />
+      <circle cx="136" cy="94" r="18" fill="#FFFFFF" fillOpacity="0.55" stroke="#4A3221" strokeWidth="3.6" />
+      <circle cx="184" cy="94" r="18" fill="#FFFFFF" fillOpacity="0.55" stroke="#4A3221" strokeWidth="3.6" />
+      <path d="M154 94 L166 94" stroke="#4A3221" strokeWidth="3.6" />
+      <path d="M118 90 L109 86" stroke="#4A3221" strokeWidth="3.6" strokeLinecap="round" />
+      <path d="M202 90 L211 86" stroke="#4A3221" strokeWidth="3.6" strokeLinecap="round" />
+      <circle cx="134" cy="93" r="4.2" fill="#3D2A1E" />
+      <circle cx="182" cy="93" r="4.2" fill="#3D2A1E" />
+      <circle cx="132.5" cy="91.5" r="1.4" fill="#FFFFFF" />
+      <circle cx="180.5" cy="91.5" r="1.4" fill="#FFFFFF" />
 
       {/* nose + mouth */}
-      <ellipse cx="150" cy="132" rx="7" ry="5.5" fill="#3D2A1E" />
-      <path d="M150 137 C150 144 158 148 160 144" fill="none" stroke="#3D2A1E" strokeWidth="3.2" strokeLinecap="round" />
-      <path d="M150 137 C150 144 142 148 140 144" fill="none" stroke="#3D2A1E" strokeWidth="3.2" strokeLinecap="round" />
+      <ellipse cx="160" cy="121" rx="6.5" ry="5" fill="#3D2A1E" />
+      <path d="M160 126 C160 133 168 137 170 133" fill="none" stroke="#4A3221" strokeWidth="3" strokeLinecap="round" />
+      <path d="M160 126 C160 133 152 137 150 133" fill="none" stroke="#4A3221" strokeWidth="3" strokeLinecap="round" />
 
       {/* cheeks */}
-      <ellipse cx="112" cy="126" rx="8" ry="5" fill="#FFB49A" opacity="0.7" />
-      <ellipse cx="188" cy="126" rx="8" ry="5" fill="#FFB49A" opacity="0.7" />
+      <ellipse cx="122" cy="115" rx="7.5" ry="4.6" fill="#FFB49A" opacity="0.7" />
+      <ellipse cx="198" cy="115" rx="7.5" ry="4.6" fill="#FFB49A" opacity="0.7" />
     </svg>
   );
 }
