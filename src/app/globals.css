@@ -1,0 +1,230 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gold-50: #fffbea;
+  --color-gold-200: #fde68a;
+  --color-gold-300: #f8d76b;
+  --color-gold-400: #f5c542;
+  --color-gold-500: #e2a720;
+  --color-gold-600: #b7811a;
+  --color-ink: #09090c;
+  --color-ink-2: #121218;
+  --font-display: var(--font-black-han), "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-sans: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: var(--color-ink);
+  color: #f4f1e8;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+.gold-text {
+  background: linear-gradient(180deg, #fff6c9 0%, #f8d76b 35%, #e2a720 70%, #fff1b0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gold-border {
+  border: 1px solid rgba(245, 197, 66, 0.35);
+  box-shadow: 0 0 0 1px rgba(245, 197, 66, 0.08) inset, 0 10px 40px -10px rgba(245, 197, 66, 0.25);
+}
+
+.gold-btn {
+  background: linear-gradient(180deg, #fde68a 0%, #f5c542 45%, #d99a14 100%);
+  color: #1a1203;
+  font-weight: 800;
+  box-shadow: 0 8px 30px -6px rgba(245, 197, 66, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s;
+}
+.gold-btn:hover {
+  transform: translateY(-1px) scale(1.02);
+  filter: brightness(1.05);
+}
+.gold-btn:active {
+  transform: scale(0.97);
+}
+.gold-btn:disabled {
+  filter: grayscale(0.7) brightness(0.6);
+  transform: none;
+  cursor: not-allowed;
+}
+
+.ghost-btn {
+  border: 1px solid rgba(245, 197, 66, 0.4);
+  color: #f8d76b;
+  transition: background 0.2s, transform 0.15s;
+}
+.ghost-btn:hover {
+  background: rgba(245, 197, 66, 0.1);
+}
+.ghost-btn:active {
+  transform: scale(0.97);
+}
+
+/* ── 배경: 반짝이 + 스포트라이트 ─────────────────────────── */
+.stage-bg {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(245, 197, 66, 0.18), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 110%, rgba(180, 40, 60, 0.18), transparent 70%),
+    var(--color-ink);
+}
+
+.sparkles {
+  background-image:
+    radial-gradient(1.5px 1.5px at 10% 20%, rgba(255, 230, 150, 0.8), transparent),
+    radial-gradient(1px 1px at 30% 70%, rgba(255, 230, 150, 0.6), transparent),
+    radial-gradient(1.5px 1.5px at 55% 35%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 75% 15%, rgba(255, 230, 150, 0.7), transparent),
+    radial-gradient(1.5px 1.5px at 85% 60%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 20% 90%, rgba(255, 230, 150, 0.6), transparent),
+    radial-gradient(1px 1px at 65% 85%, rgba(255, 255, 255, 0.6), transparent);
+  background-size: 400px 400px;
+  animation: twinkle 6s ease-in-out infinite alternate;
+}
+
+.spotlight {
+  position: absolute;
+  top: -10%;
+  width: 46vw;
+  max-width: 520px;
+  height: 120%;
+  background: conic-gradient(from 180deg at 50% 0%, transparent 42%, rgba(255, 236, 170, 0.16) 50%, transparent 58%);
+  filter: blur(6px);
+  transform-origin: 50% 0%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.spotlight-left {
+  left: 5%;
+  animation: sway-left 7s ease-in-out infinite alternate;
+}
+.spotlight-right {
+  right: 5%;
+  animation: sway-right 8s ease-in-out infinite alternate;
+}
+.spotlight-center {
+  left: 50%;
+  margin-left: min(-23vw, -260px);
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.spotlight-center.on {
+  opacity: 1;
+  animation: none;
+}
+
+@keyframes sway-left {
+  from { transform: rotate(-28deg); }
+  to { transform: rotate(8deg); }
+}
+@keyframes sway-right {
+  from { transform: rotate(28deg); }
+  to { transform: rotate(-8deg); }
+}
+@keyframes twinkle {
+  from { opacity: 0.5; }
+  to { opacity: 1; }
+}
+
+/* ── 등장 애니메이션 ───────────────────────────────────── */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+.rise {
+  opacity: 0;
+  animation: rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes winner-pop {
+  0% { opacity: 0; transform: scale(0.3) rotate(-6deg); filter: blur(10px); }
+  60% { opacity: 1; transform: scale(1.12) rotate(2deg); filter: none; }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+.winner-pop {
+  animation: winner-pop 0.9s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.float {
+  animation: float 3.2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% { filter: drop-shadow(0 0 18px rgba(245, 197, 66, 0.5)); }
+  50% { filter: drop-shadow(0 0 40px rgba(245, 197, 66, 0.9)); }
+}
+.glow {
+  animation: glow 2.4s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  20% { transform: translate(-3px, 1px) rotate(-1deg); }
+  40% { transform: translate(3px, -1px) rotate(1deg); }
+  60% { transform: translate(-2px, 2px) rotate(0); }
+  80% { transform: translate(2px, -2px) rotate(1deg); }
+}
+.shake {
+  animation: shake 0.35s linear infinite;
+}
+
+@keyframes count-pop {
+  0% { transform: scale(2.2); opacity: 0; }
+  30% { transform: scale(1); opacity: 1; }
+  80% { transform: scale(0.95); opacity: 1; }
+  100% { transform: scale(0.7); opacity: 0; }
+}
+.count-pop {
+  animation: count-pop 0.9s ease-out forwards;
+}
+
+@keyframes drumroll-bar {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes flash {
+  0% { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+.flash {
+  animation: flash 0.8s ease-out forwards;
+}
+
+mark.kw {
+  background: rgba(245, 197, 66, 0.25);
+  color: #fde68a;
+  border-radius: 4px;
+  padding: 0 2px;
+  font-weight: 700;
+}
+/* 카톡 노란 말풍선 안의 강조 */
+mark.kw.kw-bubble {
+  background: rgba(0, 0, 0, 0.82);
+  color: #fee500;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
