@@ -78,7 +78,31 @@ function pickExamples(cands: { msg: ChatMessage; matches: KeywordMatch[] }[]): C
   return out.sort((a, b) => a.time.localeCompare(b.time));
 }
 
-export function analyzeChat(chat: ParsedChat): Analysis {
+export interface AnalyzeOptions {
+  /** 분석에서 완전히 뺄 참여자 (봇 등). 메시지 수·총 메시지·후보 모두에서 제외된다. */
+  exclude?: string[];
+}
+
+/** 메시지를 한 번이라도 보낸 사람 (보낸 순서대로) */
+export function listSenders(chat: ParsedChat): string[] {
+  return [...new Set(chat.messages.map((m) => m.sender))];
+}
+
+export function analyzeChat(fullChat: ParsedChat, opts: AnalyzeOptions = {}): Analysis {
+  const excluded = new Set(opts.exclude ?? []);
+  let chat = fullChat;
+  if (excluded.size > 0) {
+    // order 는 "이벤트 직전까지의 메시지 수"이므로 제외된 메시지를 뺀 값으로 다시 맞춘다
+    const kept = [0];
+    for (const m of fullChat.messages) kept.push(kept[kept.length - 1] + (excluded.has(m.sender) ? 0 : 1));
+    chat = {
+      ...fullChat,
+      messages: fullChat.messages.filter((m) => !excluded.has(m.sender)),
+      membership: fullChat.membership
+        .filter((e) => !excluded.has(e.name))
+        .map((e) => ({ ...e, order: kept[e.order] })),
+    };
+  }
   const { messages } = chat;
   const matchers = Object.fromEntries(
     KEYWORD_AWARDS.map((id) => [id, compileRules(KEYWORD_RULES[id])]),

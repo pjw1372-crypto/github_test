@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { analyzeChat, rankBy } from "./analyze";
+import { analyzeChat, listSenders, rankBy } from "./analyze";
+import { detectBots } from "./bots";
 import { KEYWORD_RULES } from "./keywords";
 import { compileRules, findKeywordMatches } from "./matcher";
 import { parseKakaoChat } from "./parser";
@@ -188,5 +189,32 @@ describe("모바일 형식", () => {
     const chat = parseKakaoChat("2026년 2월 1일 오후 9:00, 김철수 : 홍길동님이 나갔습니다. ㅋㅋ");
     expect(chat.messages).toHaveLength(1);
     expect(chat.systemCount).toBe(0);
+  });
+});
+
+describe("봇 제외", () => {
+  const raw = [
+    "--------------- 2026년 1월 1일 목요일 ---------------",
+    "[준호] [오후 1:00] 롤하자",
+    "[롤피에스] [오후 1:01] 챔피언 티어리스트(탑) 랭크 롤",
+    "[축구봇] [오후 1:02] 안녕하세요 피파봇입니다",
+    "[ChatGPT] [오후 1:03] 여자친구에 대해 알려드릴게요",
+    "[관상가양반] [오후 1:04] 누가 이 관상가양반을 찾아왔는가?",
+    "[영준] [오후 1:05] ㅋㅋ",
+    "[영준] [오후 1:06] ㅋㅋㅋ",
+  ].join("\n");
+  const chat = parseKakaoChat(raw);
+
+  it("이름으로 봇을 추정한다", () => {
+    expect(detectBots(listSenders(chat))).toEqual(["롤피에스", "축구봇", "ChatGPT", "관상가양반"]);
+  });
+
+  it("제외한 참여자는 메시지 수·후보에서 빠진다", () => {
+    const a = analyzeChat(chat, { exclude: detectBots(listSenders(chat)) });
+    expect(a.result.totalMessages).toBe(3);
+    expect(a.result.participantCount).toBe(2);
+    expect(award(a, "quiet").ranking.map((r) => r.name)).toEqual(["준호", "영준"]);
+    expect(award(a, "lol").ranking).toEqual([expect.objectContaining({ name: "준호", count: 1 })]);
+    expect(award(a, "yeomisae").ranking).toEqual([]);
   });
 });

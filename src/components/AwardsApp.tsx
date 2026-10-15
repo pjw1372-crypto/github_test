@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { analyzeChat } from "@/lib/analyze";
+import { detectBots } from "@/lib/bots";
 import { AWARDS } from "@/lib/awards";
-import { parseKakaoChat } from "@/lib/parser";
+import { parseKakaoChat, type ParsedChat } from "@/lib/parser";
 import { readTextFile } from "@/lib/readFile";
 import { parseResultFile, readResultFromHash } from "@/lib/share";
 import type { AwardsResult, ParticipantStat } from "@/lib/types";
@@ -20,21 +21,40 @@ type View = { name: "home" } | { name: "ceremony"; index: number; phase: Phase }
 
 export default function AwardsApp() {
   const [view, setView] = useState<View>({ name: "home" });
-  const [result, setResult] = useState<AwardsResult | null>(null);
-  const [participants, setParticipants] = useState<ParticipantStat[] | null>(null);
+  /** TXT 로 분석한 경우: 원본 파싱 결과 + 제외한 참여자 → 결과는 매번 다시 계산 */
+  const [chat, setChat] = useState<ParsedChat | null>(null);
+  const [excluded, setExcluded] = useState<string[]>([]);
+  /** 공유 링크/결과 파일로 받은 경우 */
+  const [sharedResult, setSharedResult] = useState<AwardsResult | null>(null);
   const [source, setSource] = useState<LoadSource | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const analysis = useMemo(() => (chat ? analyzeChat(chat, { exclude: excluded }) : null), [chat, excluded]);
+  const result = analysis?.result ?? sharedResult;
+  const participants: ParticipantStat[] | null = analysis?.participants ?? null;
+  /** 제외 목록 화면용: 원본 기준 발신자별 메시지 수 */
+  const senders = useMemo(() => {
+    if (!chat) return null;
+    const m = new Map<string, number>();
+    for (const msg of chat.messages) m.set(msg.sender, (m.get(msg.sender) ?? 0) + 1);
+    return [...m.entries()].map(([name, messages]) => ({ name, messages })).sort((a, b) => b.messages - a.messages);
+  }, [chat]);
+
+  const showShared = (r: AwardsResult, src: LoadSource) => {
+    setChat(null);
+    setExcluded([]);
+    setSharedResult(r);
+    setSource(src);
+    setView({ name: "home" });
+  };
 
   // 공유 링크(#r=...)로 들어온 경우
   useEffect(() => {
     const load = () => {
       const r = readResultFromHash(window.location.hash);
       if (r) {
-        setResult(r);
-        setParticipants(null);
-        setSource("link");
-        setView({ name: "home" });
+        showShared(r, "link");
       } else if (window.location.hash.startsWith("#r=")) {
         setError("공유 링크가 손상되었어요. 링크 전체가 복사됐는지 확인해주세요.");
       }
@@ -45,14 +65,15 @@ export default function AwardsApp() {
   }, []);
 
   const loadChatText = useCallback((text: string, src: LoadSource) => {
-    const chat = parseKakaoChat(text);
-    if (chat.messages.length === 0) {
+    const parsed = parseKakaoChat(text);
+    if (parsed.messages.length === 0) {
       setError("대화 메시지를 찾지 못했어요. 카카오톡 '대화 내보내기'로 만든 TXT 파일인지 확인해주세요.");
       return;
     }
-    const a = analyzeChat(chat);
-    setResult(a.result);
-    setParticipants(a.participants);
+    setChat(parsed);
+    // 봇으로 보이는 참여자는 기본으로 제외 (화면에서 다시 포함 가능)
+    setExcluded(detectBots([...new Set(parsed.messages.map((m) => m.sender))]));
+    setSharedResult(null);
     setSource(src);
     setError(null);
     if (window.location.hash) history.replaceState(null, "", window.location.pathname);
@@ -69,9 +90,7 @@ export default function AwardsApp() {
         if (file.name.toLowerCase().endsWith(".json") || text.trimStart().startsWith("{")) {
           const r = parseResultFile(text);
           if (!r) throw new Error("올바른 어워즈 결과 파일이 아니에요.");
-          setResult(r);
-          setParticipants(null);
-          setSource("file");
+          showShared(r, "file");
           return;
         }
         loadChatText(text, "txt");
@@ -95,8 +114,9 @@ export default function AwardsApp() {
   }, [loadChatText]);
 
   const reset = () => {
-    setResult(null);
-    setParticipants(null);
+    setChat(null);
+    setExcluded([]);
+    setSharedResult(null);
     setSource(null);
     setError(null);
     setView({ name: "home" });
@@ -141,6 +161,11 @@ export default function AwardsApp() {
     <HomeScreen
       result={result}
       participants={participants}
+      senders={senders}
+      excluded={excluded}
+      onToggleExclude={(name) =>
+        setExcluded((ex) => (ex.includes(name) ? ex.filter((n) => n !== name) : [...ex, name]))
+      }
       source={source}
       busy={busy}
       error={error}

@@ -12,6 +12,9 @@ export type LoadSource = "txt" | "link" | "file" | "sample";
 interface Props {
   result: AwardsResult | null;
   participants: ParticipantStat[] | null;
+  senders: { name: string; messages: number }[] | null;
+  excluded: string[];
+  onToggleExclude: (name: string) => void;
   source: LoadSource | null;
   busy: boolean;
   error: string | null;
@@ -141,6 +144,8 @@ export default function HomeScreen(p: Props) {
               </div>
             </div>
 
+            {p.senders && <ExcludePanel senders={p.senders} excluded={p.excluded} onToggle={p.onToggleExclude} />}
+
             <button onClick={p.onStart} className="gold-btn w-full rounded-2xl px-6 py-4 text-lg sm:text-xl">
               🎬 시상식 시작하기
             </button>
@@ -172,6 +177,62 @@ export default function HomeScreen(p: Props) {
         </footer>
       </main>
     </Stage>
+  );
+}
+
+function ExcludePanel({
+  senders,
+  excluded,
+  onToggle,
+}: {
+  senders: { name: string; messages: number }[];
+  excluded: string[];
+  onToggle: (name: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ex = new Set(excluded);
+  return (
+    <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="font-bold text-white/90">🤖 사람 아닌 참여자 빼기</div>
+          <p className="mt-1 text-sm text-white/55">
+            {excluded.length > 0 ? (
+              <>
+                <b className="text-gold-200">{excluded.join(", ")}</b> 은(는) 분석에서 빠졌어요.
+              </>
+            ) : (
+              "봇이 있다면 눌러서 빼주세요. 메시지 수와 모든 상에서 제외돼요."
+            )}
+          </p>
+        </div>
+        <button onClick={() => setOpen((v) => !v)} className="ghost-btn shrink-0 rounded-full px-3 py-1.5 text-xs">
+          {open ? "닫기" : "수정"}
+        </button>
+      </div>
+      {open && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {senders.map((s) => {
+            const off = ex.has(s.name);
+            return (
+              <button
+                key={s.name}
+                onClick={() => onToggle(s.name)}
+                aria-pressed={off}
+                className={`rounded-full border px-3 py-1.5 text-sm transition ${
+                  off
+                    ? "border-red-400/50 bg-red-500/15 text-red-200 line-through"
+                    : "border-white/15 bg-white/5 text-white/85 hover:border-gold-400/50"
+                }`}
+              >
+                {off ? "🚫 " : ""}
+                {s.name} <span className="text-xs opacity-60">{fmtNum(s.messages)}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }
 
